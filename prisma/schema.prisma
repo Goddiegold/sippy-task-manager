@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum user_role {
+  admin @map("admin")
+  user  @map("user")
+}
+
+enum task_status {
+  todo        @map("todo")
+  in_progress @map("in_progress")
+  completed   @map("completed")
+}
+
+enum task_priority {
+  low    @map("low")
+  medium @map("medium")
+  high   @map("high")
+}
+
+model User {
+  userId        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String
+  username      String?
+  avatar        String?
+  password      String?
+  phone         String?
+  otl           String?
+  otlDuration   DateTime?
+  createdAt     DateTime? @default(now())
+  lastLoginAt   DateTime?
+  updatedAt     DateTime? @updatedAt
+  authProviders String[]  @default([])
+  role          user_role @default(user)
+  createdTasks  Task[]    @relation("createdTasks")
+  assignedTasks Task[]    @relation("assignedTasks")
+}
+
+model Task {
+  taskId       String        @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  description  String
+  image        String?
+  image_id     String?
+  user         User          @relation(fields: [userId], references: [userId], "createdTasks")
+  userId       String        @db.ObjectId
+  assignedTo   User?          @relation(fields: [assignedToId], references: [userId], "assignedTasks")
+  assignedToId String?       @db.ObjectId
+  status       task_status   @default(todo)
+  priority     task_priority @default(low)
+  createdAt    DateTime?     @default(now())
+  updatedAt    DateTime?     @updatedAt
+}
