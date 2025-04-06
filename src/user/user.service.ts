@@ -4,13 +4,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { User, user_role } from '@prisma/client';
-import { DatabaseService } from 'src/database/database.service';
+import { User } from '@prisma/client';
 import {
-  comparePasswords,
   errorMessage,
-  generateHashedPassword,
+  generateHashedPassword
 } from 'src/common/utils';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UserService {
@@ -50,91 +49,4 @@ export class UserService {
     }
   }
 
-  async updateUser({
-    payload,
-    userId,
-  }: {
-    payload: Partial<User>;
-    userId: string;
-  }) {
-    try {
-      let updatedData = { ...payload };
-
-      if (payload?.password) {
-        updatedData = {
-          ...updatedData,
-          password: generateHashedPassword(payload?.password),
-        };
-      }
-
-      const user = await this.databaseService.updateUser({
-        userId,
-        payload: updatedData,
-      });
-
-      return { ...user, password: null };
-    } catch (error) {
-      throw new InternalServerErrorException(errorMessage(error));
-    }
-  }
-
-  async updateUserPassword({
-    userId,
-    currentPassword,
-    newPassword,
-  }: {
-    userId: string;
-    currentPassword: string;
-    newPassword: string;
-  }) {
-    try {
-      const user = await this.databaseService.getUser({
-        userEmailOrId: userId,
-      });
-
-      if (!user) throw new NotFoundException('User not found');
-
-      const validPassword = comparePasswords(currentPassword, user.password);
-      if (!validPassword)
-        throw new BadRequestException('Current password is invalid!');
-
-      const password = generateHashedPassword(newPassword);
-      await this.databaseService.updateUser({
-        userId: user.userId,
-        payload: {
-          password,
-        },
-      });
-      return { message: 'Password updated successfully!' };
-    } catch (error) {
-      throw new InternalServerErrorException(errorMessage(error));
-    }
-  }
-
-  async completeOnboarding({
-    userId,
-    role,
-  }: {
-    userId: string;
-    role: user_role;
-  }) {
-    try {
-      const user = await this.databaseService.getUser({
-        userEmailOrId: userId,
-      });
-
-      if (!user) throw new NotFoundException(`User [${userId}] not found!`);
-
-      const updatedUser = await this.databaseService.updateUser({
-        userId,
-        payload: {
-          role,
-        },
-      });
-
-      return { ...updatedUser, password: null }
-    } catch (error) {
-      throw new InternalServerErrorException(errorMessage(error));
-    }
-  }
 }

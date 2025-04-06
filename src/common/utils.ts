@@ -1,6 +1,12 @@
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { Config } from 'src/config';
+import {
+  UploadApiErrorResponse,
+  UploadApiResponse,
+  v2 as cloudinary,
+} from 'cloudinary';
+import toStream = require('buffer-to-stream');
 
 export const IS_DEV_ENV = Config.NODE_ENV === 'development';
 
@@ -78,3 +84,52 @@ export function extractNameFromUsername(username: string) {
   const partBeforeUnderscore = username.split('_')[0];
   return partBeforeUnderscore.replace('-', ' ');
 }
+
+export const uploadFile = (
+  image: Buffer,
+): Promise<UploadApiResponse | UploadApiErrorResponse | null> => {
+  if (!image) return null;
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  return new Promise((resolve, reject) => {
+    const upload = cloudinary.uploader.upload_stream(
+      { resource_type: 'auto' },
+      function (error, result) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      },
+    );
+    toStream(image).pipe(upload);
+  });
+};
+
+export const deleteFile = (
+  public_id: string,
+  resource_type = 'image',
+): Promise<unknown> => {
+  if (!public_id) return null;
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(
+      public_id,
+      { resource_type },
+      function (error, result) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      },
+    );
+  });
+};

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Task, User } from '@prisma/client';
 import { isValidObjectId } from 'src/common/utils';
 import { PrismaService } from 'src/prisma.service';
+import { ITaskQuery } from 'src/types/task';
 
 @Injectable()
 export class DatabaseService {
@@ -117,17 +118,38 @@ export class DatabaseService {
   async getUserAssignedTasks({ userId }: { userId: string }) {
     const tasks = await this.prisma.task.findMany({
       where: {
-        assignedToId: userId
+        assignedToId: userId,
       },
       orderBy: {
-        createdAt: "desc"
-      }
-    })
+        createdAt: 'desc',
+      },
+    });
     return tasks;
   }
 
-  async getTasks() {
-    const tasks = await this.prisma.task.findMany();
+  async getTasks({ queries }: { queries?: ITaskQuery }) {
+    const filter = {
+      ...(queries || {}),
+    };
+
+    if (queries?.dueDate) {
+      const startOfDay = new Date(queries?.dueDate);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(queries?.dueDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      filter.dueDate = {
+        //@ts-ignore
+        gte: startOfDay,
+        lte: endOfDay,
+      };
+    }
+    const tasks = await this.prisma.task.findMany({
+      where: {
+        ...filter,
+      },
+    });
     return tasks;
   }
 }

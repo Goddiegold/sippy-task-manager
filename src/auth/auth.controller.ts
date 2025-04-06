@@ -1,8 +1,8 @@
-import { Body, Controller, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Response } from 'express';
-import { LoginInputDTO, ResetPaswordStep1DTO, ResetPaswordStep2DTO } from 'src/dto';
+import { LoginInputDTO } from 'src/dto';
 import { ResponseBody } from 'src/types';
 import { AuthService } from './auth.service';
 
@@ -26,28 +26,5 @@ export class AuthController {
       res.setHeader('Authorization', token);
       return { result };
     }
-  }
-
-
-  @Post('/reset-password')
-  async resetPasswordStep1(
-    @Body() body: ResetPaswordStep1DTO,
-  ): Promise<ResponseBody<null>> {
-    const result = await this.authService.requestToResetPassword({
-      email: body.email,
-    });
-    if (result) return { ...result, result: null };
-  }
-
-  @Patch('/reset-password/:otl')
-  async resetPasswordStep2(
-    @Body() body: ResetPaswordStep2DTO,
-    @Param('otl') otl: string,
-  ): Promise<ResponseBody<null>> {
-    const result = await this.authService.completeResetPassword({
-      otl,
-      newPassword: body.newPassword,
-    });
-    if (result) return { ...result, result: null };
   }
 }

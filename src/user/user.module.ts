@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { Config } from 'src/config';
 import { DatabaseService } from 'src/database/database.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DatabaseService } from 'src/database/database.service';
       secret: Config.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
     }),
+    PassportModule, 
   ],
   providers: [UserService, PrismaService, DatabaseService],
   controllers: [UserController],

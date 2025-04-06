@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { TaskModule } from './task/task.module';
+import { LeaderBoardModule } from './leader-board/leaderboard.module';
 
 @Module({
   imports: [
     UserModule, 
     AuthModule, 
-    TaskModule
+    TaskModule, 
+    LeaderBoardModule
   ],
   controllers: [AppController],
   providers: [AppService],

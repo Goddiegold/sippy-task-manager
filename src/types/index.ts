@@ -1,2 +1,1 @@
-
-export { ResponseBody } from "./response-body.type"
+export { ResponseBody } from './response-body.type';

@@ -1,5 +1,5 @@
 export * from './user.dto';
 
-export * from "./auth.dto"
+export * from './auth.dto';
 
-export * from "./event.dto"
+export * from './task.dto';

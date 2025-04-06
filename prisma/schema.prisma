@@ -30,7 +30,7 @@ enum task_priority {
 model User {
   userId        String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  email         String
+  email         String @unique
   username      String?
   avatar        String?
   password      String?
@@ -52,12 +52,13 @@ model Task {
   description  String
   image        String?
   image_id     String?
-  user         User          @relation(fields: [userId], references: [userId], "createdTasks")
+  user         User          @relation(fields: [userId], references: [userId], "createdTasks", onDelete: Cascade)
   userId       String        @db.ObjectId
-  assignedTo   User?          @relation(fields: [assignedToId], references: [userId], "assignedTasks")
+  assignedTo   User?         @relation(fields: [assignedToId], references: [userId], "assignedTasks", onDelete: Cascade)
   assignedToId String?       @db.ObjectId
   status       task_status   @default(todo)
   priority     task_priority @default(low)
+  dueDate      DateTime?
   createdAt    DateTime?     @default(now())
   updatedAt    DateTime?     @updatedAt
 }
