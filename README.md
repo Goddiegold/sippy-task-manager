@@ -12,7 +12,7 @@ cd <project-directory>
 ```
 
 ### 2️⃣ Create a `.env` File
-Ensure you have the `.env` file in the root directory, check slack message.
+Ensure you have the `.env` file in the root directory, check submission mail.
 
 
 ### 3️⃣ Install Dependencies
