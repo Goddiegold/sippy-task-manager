@@ -1,6 +1,7 @@
-# Music Booking API
+# Task Manager API
 
-This is a RESTful API for managing artist profiles, event listings, and booking transactions in a music booking application.
+This is a RESTful API that allows users to create, update, delete, and track tasks. This system support multiple users, authentication, task assignment, status updates, priority levels, and image uploads.
+
 
 ## 🛠️ Setup Instructions
 
@@ -33,4 +34,9 @@ npm run start:dev
 Once the server starts, you should see:
 ```
 Application is running on: http://localhost:5353
+```
+
+### 5️⃣ Run unit test
+```sh
+npm run test:e2e
 ```
