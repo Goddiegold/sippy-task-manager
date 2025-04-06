@@ -38,7 +38,7 @@ export class TaskService {
         image_id: public_id,
       } as Task;
 
-      return this.databaseService.createTask({ task: newTaskData });
+      return await this.databaseService.createTask({ task: newTaskData });
     } catch (error) {
       throw new InternalServerErrorException(errorMessage(error));
     }
@@ -75,7 +75,7 @@ export class TaskService {
       )
         throw new ForbiddenException('You cannot perform this action!');
 
-      return this.databaseService.deleteTask({ taskId });
+      return await this.databaseService.deleteTask({ taskId });
     } catch (error) {
       throw new InternalServerErrorException(errorMessage(error));
     }
@@ -97,7 +97,7 @@ export class TaskService {
       if (!task) throw new NotFoundException(`Task [${taskId}] not found!`);
 
       const userIds = [task?.assignedToId, task?.userId].filter(Boolean);
-     
+
       if (
         !userIds?.includes(currentUserId) &&
         currentUserRole !== user_role.admin
@@ -126,7 +126,7 @@ export class TaskService {
       let secure_url = null;
       let public_id = null;
 
-      if (task?.image) {
+      if (taskPayload?.image) {
         const result = await uploadFile(taskPayload?.image);
         if (result) {
           secure_url = result?.secure_url
@@ -134,7 +134,11 @@ export class TaskService {
         }
       }
 
-      return this.databaseService.updateTask({
+      if (taskPayload?.assignedToId) {
+        //Trigger notification service to send push notification to client
+      }
+
+      return await this.databaseService.updateTask({
         taskId,
         task: {
           ...taskPayload,
@@ -149,7 +153,7 @@ export class TaskService {
 
   async getUserTasks({ userId }: { userId: string }) {
     try {
-      return this.databaseService.getUserTasks({ userId });
+      return await this.databaseService.getUserTasks({ userId });
     } catch (error) {
       throw new InternalServerErrorException(errorMessage(error));
     }
@@ -157,7 +161,7 @@ export class TaskService {
 
   async getUserAssignedTasks({ userId }: { userId: string }) {
     try {
-      return this.databaseService.getUserAssignedTasks({ userId });
+      return await this.databaseService.getUserAssignedTasks({ userId });
     } catch (error) {
       throw new InternalServerErrorException(errorMessage(error));
     }
@@ -165,7 +169,7 @@ export class TaskService {
 
   async getTasks({ queries }: { queries?: ITaskQuery }) {
     try {
-      return this.databaseService.getTasks({ queries });
+      return await this.databaseService.getTasks({ queries });
     } catch (error) {
       throw new InternalServerErrorException(errorMessage(error));
     }

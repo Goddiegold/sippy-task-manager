@@ -115,9 +115,9 @@ export const deleteFile = (
 ): Promise<unknown> => {
   if (!public_id) return null;
   cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: Config.CLOUDINARY.CLOUD_NAME,
+    api_key: Config.CLOUDINARY.API_KEY,
+    api_secret: Config.CLOUDINARY.API_SECRET,
   });
   return new Promise((resolve, reject) => {
     cloudinary.uploader.destroy(

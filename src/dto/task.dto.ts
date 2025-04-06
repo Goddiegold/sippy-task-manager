@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { task_priority, task_status } from '@prisma/client';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateTaskDTO {
   @IsString()
@@ -12,13 +12,15 @@ export class CreateTaskDTO {
   description: string;
 
   @IsNotEmpty()
+  @IsOptional()
   status: task_status;
 
   @IsNotEmpty()
+  @IsOptional()
   priority: task_priority;
 
   @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   dueDate: Date;
 }
 

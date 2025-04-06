@@ -159,7 +159,10 @@ describe('TaskController (e2e)', () => {
   it('/api/task/:taskId (UPDATE)', async () => {
     const response = await testAgent
       .patch(`/api/task/${taskId}`)
-      .send(updatedTask)
+      .send({
+        ...updatedTask,
+        assignedToId: userTwoId
+      })
       .set('Authorization', `Bearer ${token}`);
 
     console.log("updated task", response?.body);
