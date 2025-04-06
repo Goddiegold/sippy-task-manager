@@ -13,7 +13,7 @@ import {
   uploadFile,
 } from 'src/common/utils';
 import { DatabaseService } from 'src/database/database.service';
-import { ITaskPayload, ITaskQuery } from 'src/types/task';
+import { ITaskPayload, ITaskQuery } from 'src/types';
 
 @Injectable()
 export class TaskService {

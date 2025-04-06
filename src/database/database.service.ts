@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Task, User } from '@prisma/client';
+import { Task, task_status, User } from '@prisma/client';
 import { isValidObjectId } from 'src/common/utils';
 import { PrismaService } from 'src/prisma.service';
-import { ITaskQuery } from 'src/types/task';
+import { ITaskQuery } from 'src/types/task.type';
 
 @Injectable()
 export class DatabaseService {
@@ -151,5 +151,16 @@ export class DatabaseService {
       },
     });
     return tasks;
+  }
+
+  async getUsersForLeaderBoard() {
+    const users = await this.prisma.user.findMany({
+      include: {
+        createdTasks: true,
+        assignedTasks: true,
+      },
+    });
+
+    return users;
   }
 }

@@ -1,26 +1,18 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Res
-} from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { ILeaderBoardType, ResponseBody } from 'src/types';
 import { LeaderBoardService } from './leaderboardservice';
 
-@Controller('api/user')
+@Controller('api/leaderboard')
 export class UserController {
-  constructor(
-    private readonly leaderBoardService: LeaderBoardService,
-  ) { }
+  constructor(private readonly leaderBoardService: LeaderBoardService) { }
 
-  @Post('/create')
-  async createUser(
-    @Body() body,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-   
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  async getLeaderBoardData(): Promise<ResponseBody<ILeaderBoardType[]>> {
+    const result = await this.leaderBoardService.getLeaderBoardData();
+    if (result) {
+      return { result };
+    }
   }
-
-
-
 }

@@ -12,14 +12,14 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Task, task_priority, task_status, User } from '@prisma/client';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Task, User } from '@prisma/client';
 import { CurrentUser } from 'src/common/decorators';
+import { CreateTaskDTO, UpdateTaskDTO } from 'src/dto/task.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ResponseBody } from 'src/types';
+import { ITaskPayload, ITaskQuery } from 'src/types';
 import { TaskService } from './task.service';
-import { CreateTaskDTO, UpdateTaskDTO } from 'src/dto/task.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ITaskPayload, ITaskQuery } from 'src/types/task';
 
 @Controller('api/task')
 export class TaskController {

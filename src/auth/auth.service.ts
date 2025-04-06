@@ -20,8 +20,6 @@ export class AuthService {
       const userExists = await this.databaseService.getUser({
         userEmailOrId: user.email,
       });
-      console.log('userExists', userExists);
-      console.log("userBody", user);
 
       if (!userExists) throw new NotFoundException('User not registered!');
       const validPassword = comparePasswords(

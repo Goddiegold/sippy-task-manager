@@ -33,7 +33,7 @@ export class UserController {
       res.setHeader('Authorization', token);
       return { result };
     }
-  }m
+  }
 
 
   @UseGuards(JwtAuthGuard)
